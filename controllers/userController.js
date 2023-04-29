@@ -25,6 +25,7 @@ module.exports = {
         .then((user) => res.json(user))
         .catch((err) => res.status(500).json(err));
     },    
+    //todo Update users information
     // Delete user
     //todo remove friends associations
     deleteUser(req,res) {
