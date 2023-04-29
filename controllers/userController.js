@@ -4,14 +4,12 @@ const { User } = require('../models/');
 module.exports = {
     // Get all users
     getUsers(req, res) {
-        console.log("I am in the users get route")
         User.find()
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err));
     },
     // Get single user by passing ID into query params
     getSingleUser(req, res) {
-        console.log(`In singe user route with user ID ${req.params.userId}`)
         User.findOne({ _id: req.params.userId })
             .select('-__v')            
             .then((user) =>                 
@@ -27,4 +25,20 @@ module.exports = {
         .then((user) => res.json(user))
         .catch((err) => res.status(500).json(err));
     },    
+    // Delete user
+    //todo remove friends associations
+    deleteUser(req,res) {
+        console.log("I am in the delete route")
+        User.findOneAndDelete({ _id: req.params.userId })
+            .then((user) => 
+                !user 
+                    ? res.status(404).json({ message: 'No user with that ID' })
+                    //todo remove other associations
+                    // for now respond with deleted user
+                    : res.status(200).json(user)
+            )
+            //todo other associations will return another promise
+            // .then(() => res.json({ message: 'User deleted and removed from other users friends lists'}))
+            .catch(err => res.status(500).json(err));
+    },
 };
