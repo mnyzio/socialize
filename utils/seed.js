@@ -16,7 +16,7 @@ connection.once('open', async () => {
 
     // get all newly created users 
     const allUsers = await User.find();
-    console.log("🚀 ~ file: seed.js:19 ~ connection.once ~ allUsers:", allUsers)
+    // console.log("🚀 ~ file: seed.js:19 ~ connection.once ~ allUsers:", allUsers)
 
     // Add three random friends to each users    
     for (let i = 0; i < allUsers.length; i++) {

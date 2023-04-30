@@ -39,16 +39,26 @@ module.exports = {
     },
     // Delete user
     //todo remove friends associations
+    //todo remove associated thoughts
     deleteUser(req, res) {
         console.log("I am in the delete route")
         User.findOneAndDelete({ _id: req.params.userId })
-            .then((user) =>
-                !user
-                    ? res.status(404).json({ message: 'No user with that ID' })
-                    //todo remove other associations
+            .then((user) => {
+                console.log("🚀 ~ file: userController.js:46 ~ .then ~ user:", user)
+                if (!user) {
+                    res.status(404).json({ message: 'No user with that ID' })
+                } else {
                     // for now respond with deleted user
-                    : res.status(200).json(user)
-            )
+                    res.status(200).json(user)
+                    //todo remove other associations
+                    // User.deleteMany({ _id: { $in: user.friends }})
+                    //     .then((data) => { 
+                    //         console.log(data)
+                    //         res.status(200).json({ message: 'User deleted and removed from other users friends list' })
+                    //     })
+                    //     .catch((err) => res.status(500).json(err));
+                }
+            })
             //todo other associations will return another promise
             // .then(() => res.json({ message: 'User deleted and removed from other users friends lists'}))
             .catch(err => res.status(500).json(err));
