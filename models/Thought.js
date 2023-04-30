@@ -10,21 +10,23 @@ const thoughtSchema = new Schema(
             maxlength: 280,
         },
         createdAt: {
-            type: Date,            
+            type: Date,
             default: Date.now(),
             //todo Use a getter method to format the timestamp on query
         },
         username: {
             type: String,
             required: true,
-        },        
+        },
         //todo validate this is correct
-        reactions: [reactionSchema]       
+        reactions: [reactionSchema]
     },
     {
         toJSON: {
             getters: true,
+            // virtuals: true,
         },
+        id: false,
     }
 );
 
@@ -34,11 +36,11 @@ const thoughtSchema = new Schema(
 // })
 
 //todo validate this is correct solution
-thoughtSchema.virtual('reactionCount').get(function() {
+thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
 });
 
 
-const Thought = model('thought', thoughtSchema);
+const Thought = model('Thought', thoughtSchema);
 
 module.exports = Thought;

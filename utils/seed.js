@@ -16,6 +16,7 @@ connection.once('open', async () => {
 
     // get all newly created users 
     const allUsers = await User.find();
+    console.log("🚀 ~ file: seed.js:19 ~ connection.once ~ allUsers:", allUsers)
 
     // Add three random friends to each users    
     for (let i = 0; i < allUsers.length; i++) {
@@ -36,16 +37,19 @@ connection.once('open', async () => {
         // find each user and update its friends array
         await User.findOneAndUpdate(
             { _id: allUsers[i]._id },
-            { $addToSet: { friends: [
-                allUsers[selectedIndexes[0]],               
-                allUsers[selectedIndexes[1]],               
-                allUsers[selectedIndexes[2]],                               
-                ]  
-            }},
+            {
+                $addToSet: {
+                    friends: [
+                        allUsers[selectedIndexes[0]],
+                        allUsers[selectedIndexes[1]],
+                        allUsers[selectedIndexes[2]],
+                    ]
+                }
+            },
             { runValidators: true, new: true }
         )
     }
-    
+
     console.info('Seeding complete! 🌱');
     process.exit(0);
 });
