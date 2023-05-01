@@ -42,7 +42,23 @@ module.exports = {
             .catch(err => res.status(500).json(err))
     },
     //todo Update thought by id
-    //todo Delete thought by id
+    updateThought(req, res) {
+
+    },
+    // Delete thought by id
+    //todo delete all reacions associated with that thought
+    deleteThought(req, res) {
+        Thought.findOneAndDelete({ _id: req.params.id })
+            .then((thought) => {
+                if (!thought) {
+                    res.status(404).json({ message: 'No thought with that Id'})
+                } else {
+                    // Delete thought for now
+                    res.status(200).json(thought)
+                    //todo remove reacions associated with that thought 
+                }
+            })
+    },
     //todo add reacion to thought using POST to /api/thoughts/:thoughtId/reactions
     //todo deleted reacion from thought using DELETE to /api/thoughts/:thoughtId/reactions
 };
