@@ -10,6 +10,7 @@ module.exports = {
             })
             .catch((err) => res.status(500).json(err))
     },
+    //todo get a single thought by id
     // Create thought
     createThought(req, res) {
         Thought.create(req.body)            
@@ -29,4 +30,8 @@ module.exports = {
             )
             .catch(err => res.status(500).json(err))
     },
+    //todo Update thought by id
+    //todo Delete thought by id
+    //todo add reacion to thought using POST to /api/thoughts/:thoughtId/reactions
+    //todo deleted reacion from thought using DELETE to /api/thoughts/:thoughtId/reactions
 };
