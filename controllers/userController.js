@@ -51,13 +51,9 @@ module.exports = {
                     // remove user from other users friends list
                     return User.updateMany(
                         { friends: user._id },
-                        { $pull: { friends: user._id }}
-                        )
-                        // .then((data) => { 
-                        //     console.log(data)
-                        //     res.status(200).json({ message: 'User deleted and removed from other users friends list' })
-                        // })
-                        // .catch((err) => res.status(500).json(err));
+                        { $pull: { friends: user._id }},
+                        { new: true }
+                        )                       
                 }
             })
             .then(() => res.json({ message: 'User deleted and removed from other users friends lists'}))
