@@ -1,6 +1,8 @@
 const connection = require('../config/connection');
 const { User, Thought } = require('../models');
-const { users } = require('./userSeed');
+const { populateThoughts } = require('./thoughtsSeed');
+const { users, populateUsers } = require('./userSeed');
+
 
 connection.on('error', (err) => err);
 
@@ -15,40 +17,18 @@ connection.once('open', async () => {
     console.table(users);
 
     // get all newly created users 
-    const allUsers = await User.find();
-    // console.log("🚀 ~ file: seed.js:19 ~ connection.once ~ allUsers:", allUsers)
+    // const allUsers = await User.find();
+    // console.table(allUsers)
 
-    // Add three random friends to each users    
-    for (let i = 0; i < allUsers.length; i++) {
-        const currentIndex = i;
-        const selectedIndexes = [];
+    // Populate thoughts for each user
+    // await populateThoughts(allUsers);
+    await populateThoughts(users);
 
-        // Randomly select 3 indexes from allUsers array 
-        // Current user cannot be included in the array and each index needs to be unique
-        while (selectedIndexes.length < 3) {
-            const randomIndex = Math.floor(Math.random() * allUsers.length);
-            if (randomIndex !== currentIndex) {
-                if (!selectedIndexes.includes(randomIndex)) {
-                    selectedIndexes.push(randomIndex);
-                };
-            };
-        }
+    // Populate users and their friends
+    // await populateUsers(allUsers);
+    await populateUsers(users);
 
-        // find each user and update its friends array
-        await User.findOneAndUpdate(
-            { _id: allUsers[i]._id },
-            {
-                $addToSet: {
-                    friends: [
-                        allUsers[selectedIndexes[0]],
-                        allUsers[selectedIndexes[1]],
-                        allUsers[selectedIndexes[2]],
-                    ]
-                }
-            },
-            { runValidators: true, new: true }
-        )
-    }
+    //todo Populate reactions
 
     console.info('Seeding complete! 🌱');
     process.exit(0);
