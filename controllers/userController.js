@@ -1,4 +1,4 @@
-const { User } = require('../models/');
+const { User, Thought } = require('../models/');
 
 
 module.exports = {
@@ -40,23 +40,25 @@ module.exports = {
     },
     // Delete user
     // remove friends associations
-    //todo remove associated thoughts
+    // remove associated thoughts
     deleteUser(req, res) {
         console.log("I am in the delete route")
         User.findOneAndDelete({ _id: req.params.userId })
-            .then((user) => {
+            .then(async (user) => {
                 if (!user) {
                     res.status(404).json({ message: 'No user with that ID' })
                 } else {
                     // remove user from other users friends list
-                    return User.updateMany(
+                    const updatedUsers = await User.updateMany(
                         { friends: user._id },
                         { $pull: { friends: user._id }},
                         { new: true }
-                        )                       
+                        ) 
+                        // Remove thoughts associated with user
+                        const deletedThoughts = await Thought.deleteMany({ username: user.username })
+                    res.json({ message: `User deleted and removed from other users friends lists`})
                 }
             })
-            .then(() => res.json({ message: 'User deleted and removed from other users friends lists'}))
             .catch(err => res.status(500).json(err));
     },
     // Add friend
