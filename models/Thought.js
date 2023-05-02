@@ -12,21 +12,18 @@ const thoughtSchema = new Schema(
         },
         createdAt: {
             type: Date,
-            // default: Date.now(),
-            default: dayjs(),
+            default: Date.now
             //todo Use a getter method to format the timestamp on query
         },
         username: {
             type: String,
             required: true,
         },
-        //todo validate this is correct
         reactions: [reactionSchema]
     },
     {
         toJSON: {
-            getters: true,
-            // virtuals: true,
+            getters: true,            
         },
         id: false,
     }
@@ -34,7 +31,7 @@ const thoughtSchema = new Schema(
 
 //todo Use a getter method to format the timestamp on query
 thoughtSchema.virtual('formatedDate').get(function () {
-    return dayjs(this.createdAt).format('DD/MM/YYYY')
+    return dayjs(this.createdAt).format('DD/MM/YYYY')    
 })
 
 //todo validate this is correct solution
