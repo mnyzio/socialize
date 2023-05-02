@@ -12,7 +12,7 @@ module.exports = {
     },
     // Get a single thought by id
     getSingleThought(req, res){
-        Thought.findOne({ _id: req.params.id })
+        Thought.findOne({ _id: req.params.thoughtId })
             .select('-__v')
             .populate({ path: 'reactions', select: '-__v' })
             .then((thought) => 
@@ -41,14 +41,23 @@ module.exports = {
             )
             .catch(err => res.status(500).json(err))
     },
-    //todo Update thought by id
+    // Update thought by id
     updateThought(req, res) {
-
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $set: { ...req.body }},
+            { new: true }
+            ).then((thought) => 
+                !thought 
+                    ? res.status(404).json({ message: 'No thought with that ID' })
+                    : res.status(200).json(thought)
+            )
+            .catch(err => res.status(500).json(err))
     },
     // Delete thought by id
     //todo delete all reacions associated with that thought
     deleteThought(req, res) {
-        Thought.findOneAndDelete({ _id: req.params.id })
+        Thought.findOneAndDelete({ _id: req.params.thoughtId })
             .then((thought) => {
                 if (!thought) {
                     res.status(404).json({ message: 'No thought with that Id'})
@@ -60,5 +69,8 @@ module.exports = {
             })
     },
     //todo add reacion to thought using POST to /api/thoughts/:thoughtId/reactions
+    addReaction(req, res) {
+
+    }
     //todo deleted reacion from thought using DELETE to /api/thoughts/:thoughtId/reactions
 };

@@ -49,14 +49,14 @@ module.exports = {
                     res.status(404).json({ message: 'No user with that ID' })
                 } else {
                     // remove user from other users friends list
-                    const updatedUsers = await User.updateMany(
+                    await User.updateMany(
                         { friends: user._id },
                         { $pull: { friends: user._id }},
                         { new: true }
                         ) 
-                        // Remove thoughts associated with user
-                        const deletedThoughts = await Thought.deleteMany({ username: user.username })
-                    res.json({ message: `User deleted and removed from other users friends lists`})
+                    // Remove thoughts associated with user
+                    await Thought.deleteMany({ username: user.username })
+                    res.json({ message: `User deleted, removed from other users friends lists. User's thought deleted`})
                 }
             })
             .catch(err => res.status(500).json(err));
