@@ -54,23 +54,45 @@ module.exports = {
             )
             .catch(err => res.status(500).json(err))
     },
-    // Delete thought by id
-    //todo delete all reacions associated with that thought
+    // Delete thought by id    
     deleteThought(req, res) {
         Thought.findOneAndDelete({ _id: req.params.thoughtId })
             .then((thought) => {
                 if (!thought) {
                     res.status(404).json({ message: 'No thought with that Id'})
-                } else {
-                    // Delete thought for now
-                    res.status(200).json(thought)
-                    //todo remove reacions associated with that thought 
+                } else {                    
+                    res.status(200).json(thought)                    
                 }
-            })
+            }).
+            catch (err => res.status(500).json(err));
     },
-    //todo add reacion to thought using POST to /api/thoughts/:thoughtId/reactions
-    addReaction(req, res) {
-
-    }
-    //todo deleted reacion from thought using DELETE to /api/thoughts/:thoughtId/reactions
+    // Add reaction to thought using POST to /api/thoughts/:thoughtId/reactions
+    addReaction(req, res) {       
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body }},
+            { runValidators: true, new: true }
+            )
+            .then((thought) => {
+                !thought
+                    ? res.status(404).json({ message: 'No thought with that Id'})
+                    : res.status(200).json(thought)                    
+            })
+            .catch (err => res.status(500).json(err));
+    },
+    // Delete reaction from thought using DELETE to /api/thoughts/:thoughtId/reactions/:reactionId
+    // Source: https://stackoverflow.com/questions/25586901/how-to-find-document-and-single-subdocument-matching-given-criterias-in-mongodb
+    deleteReaction(req, res) {
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId, reactions: { $elemMatch: { reactionId: req.params.reactionId }}},
+            { $pull: { reactions: { reactionId: req.params.reactionId }}},            
+            { new: true }
+            )
+            .then((thought) => {
+                !thought
+                    ? res.status(404).json({ message: 'Reaction Id not associated with Tought Id'})
+                    : res.status(200).json(thought)                    
+            })
+            .catch (err => res.status(500).json(err));
+    },
 };
