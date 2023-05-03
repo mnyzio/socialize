@@ -28,10 +28,11 @@ module.exports = {
             .then((thought) => {
                 // find user with id passed in the req.body.userId
                 // Add thought to users thoughts array
+                // return User.findOneAndUpdate(
                 return User.findOneAndUpdate(
                     { _id: req.body.userId },
                     { $addToSet: { thoughts: thought._id }},
-                    { new: true }
+                    { runValidators: true, new: true }
                 );
             })
             .then((user) => 
@@ -46,7 +47,7 @@ module.exports = {
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $set: { ...req.body }},
-            { new: true }
+            { runValidators: true, new: true }
             ).then((thought) => 
                 !thought 
                     ? res.status(404).json({ message: 'No thought with that ID' })

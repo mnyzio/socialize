@@ -5,7 +5,6 @@ module.exports = {
     // Get all users
     getUsers(req, res) {
         User.find()
-            // .populate({ path: 'friends', select: '-__v' })
             .then((users) => res.json(users))
             .catch((err) => res.status(500).json(err));
     },
@@ -30,7 +29,7 @@ module.exports = {
     },
     // Update user information by ID
     updateUser(req, res) {
-        User.findOneAndUpdate({ _id: req.params.userId }, { $set: { ...req.body } }, { new: true })
+        User.findOneAndUpdate({ _id: req.params.userId }, { $set: { ...req.body } }, { runValidators: true, new: true })
             .then((user) =>
                 !user
                     ? res.status(404).json({ message: 'No user with this ID' })
@@ -52,7 +51,7 @@ module.exports = {
                     await User.updateMany(
                         { friends: user._id },
                         { $pull: { friends: user._id }},
-                        { new: true }
+                        { runValidators: true, new: true }
                         ) 
                     // Remove thoughts associated with user
                     await Thought.deleteMany({ username: user.username })
@@ -63,7 +62,7 @@ module.exports = {
     },
     // Add friend
     addFriend(req, res) {
-        User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.params.friendId } }, { new: true })
+        User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.params.friendId } }, { runValidators: true, new: true })
             .then((user) =>
                 !user
                     ? res.status(404).json({ message: 'No user with that ID' })
@@ -73,7 +72,7 @@ module.exports = {
     },
     // Delete friend
     deleteFriend(req, res) {
-        User.findByIdAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true })
+        User.findByIdAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { runValidators: true, new: true })
             .then((user) =>
                 !user
                     ? res.status(404).json({ message: 'No user with that ID' })

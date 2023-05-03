@@ -19,9 +19,11 @@ const reactionSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
-        }
-    },
-    //todo elaborate
+            get: function(date) {
+                return dayjs(date).format('DD/MM/YYYY')
+            },
+        },
+    },    
     {
         toJSON: {
             getters: true,            
@@ -29,10 +31,5 @@ const reactionSchema = new Schema(
         id: false,
     }
 );
-
-//todo Use a getter method to format the timestamp on query
-reactionSchema.virtual('formatedDate').get(function () {
-    return dayjs(this.createdAt).format('DD/MM/YYYY')
-})
 
 module.exports = reactionSchema;

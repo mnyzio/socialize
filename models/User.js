@@ -14,7 +14,6 @@ const userSchema = new Schema(
             unique: true,
             lowercase: true,
             // Must match a valid email address (look into Mongoose's matching validation)
-            //todo Work on better e-mail validator
             match: [
                 /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 'Please add a valid email address',
@@ -37,7 +36,6 @@ const userSchema = new Schema(
     },
     {
         toJSON: {
-            // getters: true,
             virtuals: true,
         },
         id: false,
@@ -50,7 +48,6 @@ userSchema
     .get(function () {
         return this.friends.length;
     })
-
 
 const User = model('User', userSchema);
 
