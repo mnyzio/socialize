@@ -16,19 +16,12 @@ connection.once('open', async () => {
     await User.collection.insertMany(users);
     console.table(users);
 
-    // get all newly created users 
-    // const allUsers = await User.find();
-    // console.table(allUsers)
-
     // Populate thoughts for each user
-    // await populateThoughts(allUsers);
+    // Popolate reaction for each thought
     await populateThoughts(users);
 
-    // Populate users and their friends
-    // await populateUsers(allUsers);
+    // Populate users and their friends    
     await populateUsers(users);
-
-    //todo Populate reactions
 
     console.info('Seeding complete! 🌱');
     process.exit(0);
